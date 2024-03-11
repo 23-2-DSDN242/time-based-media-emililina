@@ -11,7 +11,70 @@ function draw_clock(obj) {
   //        < 0 if no alarm is set
   //        = 0 if the alarm is currently going off
   //        > 0 --> the number of seconds until alarm should go off
-  background(181,226,250); //  SKY BLUE
+
+ 
+  angleMode(DEGREES);
+let globeDiam = 450;
+ let hourMap = map(obj.hours, 0,23, 0,359);
+
+
+
+
+ console.log(obj.hours);
+
+
+  background(35);
+
+  push();
+      translate(width/2, height/2);
+      rotate(hourMap);
+      draw_globe(); 
+  pop();
+
+
+
+
+push(); // metronome hand, expresses milliseconds -> seconds
+      translate(width/2, height/2);
+
+let metroAngle = map(obj.millis, 0, 999, 330,390); //Metronome forward
+let metroAngleBack = map(obj.millis, 0, 999, 390,330); //Metronome forward
+
+        if(obj.seconds/2 %1){
+        rotate(metroAngle);
+        } else {
+          rotate(metroAngleBack);
+        }
+
+      draw_metroHand();
+pop();
+
+
+  
+  
+  
+function draw_globe (obj){
+ellipseMode(CENTER);
+  fill(200,220,255);
+  noStroke();
+  ellipse(0,0,globeDiam,globeDiam)  //dayHalf
+  fill(20,40,85);
+  arc(0,0,globeDiam+2,globeDiam+2, 180,0 , OPEN); //nightHalf
+}
+
+function draw_metroHand(obj){
+  stroke(255);
+  strokeWeight(3);
+  line(0,0, 0,-50);
+}
+
+}
+
+
+/* OLD BUCKET FOUNTAIN CODE
+
+
+background(181,226,250); //  SKY BLUE
   fill(255); // WHITE (TEXT)
   textSize(40);
 
@@ -108,4 +171,4 @@ function draw_clock(obj) {
   arc(391,135,50,50,308,50,OPEN); //RIGHT WING
   arc(391,135,50,50,140,227,OPEN); //RIGHT WING
   pop();
-}
+  */

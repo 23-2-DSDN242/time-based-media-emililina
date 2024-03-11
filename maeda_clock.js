@@ -371,7 +371,7 @@ function draw_activeM(){
   pop();
 }
 
-function draw_m0(obj){ // QUESTION: does obj need to go in these brackets? The code works with or without.
+function draw_m0(obj){ // QUESTION: does obj need to go in these brackets? The code works with or without as it is now.
   
   rect(6,0, 18, 6); //0, top
   rect(0, 6, 6, 30); //0, left
