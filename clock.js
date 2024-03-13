@@ -12,13 +12,10 @@ function draw_clock(obj) {
   //        = 0 if the alarm is currently going off
   //        > 0 --> the number of seconds until alarm should go off
 
- 
+ let font; 
   angleMode(DEGREES);
 let globeDiam = 450;
  let hourMap = map(obj.hours, 0,23, 0,359);
-
-
-
 
  console.log(obj.hours);
 
@@ -32,13 +29,13 @@ let globeDiam = 450;
   pop();
 
 
-
+  draw_metroBacker(obj);
 
 push(); // metronome hand, expresses milliseconds -> seconds
       translate(width/2, height/2);
 
 let metroAngle = map(obj.millis, 0, 999, 330,390); //Metronome forward
-let metroAngleBack = map(obj.millis, 0, 999, 390,330); //Metronome forward
+let metroAngleBack = map(obj.millis, 0, 999, 390,330); //Metronome backward
 
         if(obj.seconds/2 %1){
         rotate(metroAngle);
@@ -49,23 +46,149 @@ let metroAngleBack = map(obj.millis, 0, 999, 390,330); //Metronome forward
       draw_metroHand();
 pop();
 
+push();
+translate(width/2,height/2);
+draw_secondHand(obj);
+pop();
+
+push();
+draw_minHand(obj);
+pop();
+let dayBlue = color(200,220,255);
+let nightBlue = color(20,40,85);
+
+let dayNightInt = lerpColor(dayBlue, nightBlue, 0.33);
+let nightDayInt = lerpColor(dayBlue, nightBlue, 0.66);
+
+
+//lerpColor test
+fill(nightBlue);
+rect(20,0,20,20);
+fill(nightDayInt);
+rect(20,20,20,20);
+fill(dayNightInt);
+rect(20,40,20,20);
+fill(dayBlue);
+rect(20,60,20,20);
+
+// preload();
+
+push();
+
+  fill(255);
+  textFont(loadFont('assets/Highwind.ttf'));
+  textSize(36);
+  text('TESTING', 10, 500);
+pop();
+
+
+//----------------------------------------------------------------------the function zone
+  
+function preload() {
+  // Creates a p5.Font object.
+  font = loadFont('assets/Highwind.ttf');
+}
+
+
+function draw_globe (obj){
+
+  let dayBlue = color(200,220,255);
+  let nightBlue = color(20,40,85);
+  let nightBluelalph = color(20,40,85,50);
+
+ellipseMode(CENTER);
+  noStroke();
+  
+  fill(dayBlue);
+  ellipse(0,0,globeDiam,globeDiam)  //dayHalf
+  fill(240, 211, 149);
+  ellipse(0,globeDiam/4,50,50); //sun
+
+  for(let i = 50; i < 100; i++){
+    push();
+    noStroke();
+          fill(240, 211, 149,6);  
+
+    ellipse(0, globeDiam/4, i,i);
+    pop();  
+  }
+
+
+  fill(nightBlue);
+  // arc(0,0,globeDiam+2,globeDiam+2, 180,0 , OPEN); //nightHalf
+push();
+  fill(nightBluelalph);
+  rotate(-112.5);
+  // arc(0,0,globeDiam+2,globeDiam+2, nightWedgeS, nightWedgeE , PIE); //nightHalf lowAlpha
+
+  for(let i = 0; i < 205; i++){
+    
 
   
-  
-  
-function draw_globe (obj){
-ellipseMode(CENTER);
-  fill(200,220,255);
-  noStroke();
-  ellipse(0,0,globeDiam,globeDiam)  //dayHalf
-  fill(20,40,85);
-  arc(0,0,globeDiam+2,globeDiam+2, 180,0 , OPEN); //nightHalf
+    let nightWedgeS = 0-(2*i)/5;
+    let nightWedgeE = 45+(2*i)/5;
+    
+    fill(20,40,85,10);
+    noStroke();
+    
+    arc(0,0,globeDiam+2,globeDiam+2, nightWedgeS, nightWedgeE , PIE); //nightHalf lowAlpha
+      
+    }
+
+
+
+pop();
+  fill(230, 240, 245);
+  ellipse(0,-globeDiam/4,50,50); //moon
+
+
 }
 
 function draw_metroHand(obj){
+  push();
   stroke(255);
   strokeWeight(3);
   line(0,0, 0,-50);
+  pop();
+}
+
+function draw_metroBacker(obj){
+push();
+    noStroke();
+    fill(62, 139, 140);
+    ellipse(width/2,height/2,105,105);
+  pop();
+}
+
+function draw_secondHand(obj){
+
+  // Draw hour markers. ChatGPT helped.
+  strokeWeight(4);
+
+  for (let i = 0; i < 12; i++) {
+    let angle = map(i, 0, 12, 0, 360) - 90;
+    let x = 160 * cos(angle);
+    let y = 160 * sin(angle);
+    point(x, y);
+  }
+
+  let secAngle = map(obj.seconds, 0, 59, 0, 360); // I want to figure out a way to make this move smoothly instead of jerking.
+  // console.log(secAngle);
+  rotate(secAngle);
+  strokeWeight(4);
+  line(0,-45,0,-55);
+}
+
+function draw_minHand(obj){
+  push();
+  let minAngle = map(obj.minutes, 0, 59, 0, 360);
+  // console.log(secAngle);
+  translate(width/2,height/2);
+  rotate(minAngle);
+  strokeWeight(4);
+  stroke(255);
+  line(0,-150,0,-180);
+  pop();
 }
 
 }
