@@ -26,20 +26,23 @@ function draw_clock(obj) {
   let nightCol = color(20, 40, 85);
   let duskCol = color(197, 113, 147);
   let dawnCol = color(230, 196, 150);
+  
   let accCol = color(113, 138, 157);
 
-
   let globeDiam = 450;
+  let globeRad = globeDiam / 2;
   let hourMap = map(hours, 0, 24, 0, 360);
   let secAngle = map(seconds, 0, 59, 0, 360); // I want to figure out a way to make this move smoothly instead of jerking.
 
   //  console.log(hours);
 
   angleMode(DEGREES);
+  if (hours > 17 || hours < 7){
   background(35);
+} else {
+  background()
+}
   translate(width / 2, height / 2);
-
-
 
   push();
   angleMode(DEGREES);
@@ -89,8 +92,8 @@ function draw_clock(obj) {
   pop();
 
   push();
-  draw_minMarker(obj);
   draw_minHand(obj);
+  draw_minMarker(obj);
   pop();
 
   push(); //NEEDS PUSHPOP
@@ -182,8 +185,8 @@ function draw_clock(obj) {
       push();
       angleMode(DEGREES);
       let newI = map(i, 0, lerpLength, 0, 25);
-      let x = 180 * cos(newI);
-      let y = 180 * sin(newI);
+      let x = globeRad * cos(newI);
+      let y = globeRad * sin(newI);
       let newLerp = map(newI, 0, 25, 0, 1);
       let lerpTestA = lerpColor(duskCol, dayCol, newLerp);
       stroke(lerpTestA);
@@ -195,8 +198,8 @@ function draw_clock(obj) {
       push();
       angleMode(DEGREES);
       let newI = map(i, 0, lerpLength, 0, 25);
-      let x = 180 * cos(newI);
-      let y = 180 * sin(newI);
+      let x = globeRad * cos(newI);
+      let y = globeRad * sin(newI);
       let newLerp = map(newI, 0, 25, 0, 1);
       let lerpTestA = lerpColor(nightCol, duskCol, newLerp);
       rotate(-25);
@@ -209,8 +212,8 @@ function draw_clock(obj) {
       push();
       angleMode(DEGREES);
       let newI = map(i, 0, lerpLength, 0, 25);
-      let x = 180 * cos(newI);
-      let y = 180 * sin(newI);
+      let x = globeRad * cos(newI);
+      let y = globeRad * sin(newI);
       let newLerp = map(newI, 0, 25, 0, 1);
       let lerpTestA = lerpColor(duskCol, dayCol, newLerp);
       stroke(lerpTestA);
@@ -223,8 +226,8 @@ function draw_clock(obj) {
       angleMode(DEGREES);
       rotate(180);
       let newI = map(i, 0, lerpLength, 0, 25);
-      let x = 180 * cos(newI);
-      let y = 180 * sin(newI);
+      let x = globeRad * cos(newI);
+      let y = globeRad * sin(newI);
       let newLerp = map(newI, 0, 25, 0, 1);
       let lerpTestA = lerpColor(dawnCol, nightCol, newLerp);
       stroke(lerpTestA);
@@ -237,8 +240,8 @@ function draw_clock(obj) {
       angleMode(DEGREES);
       rotate(180);
       let newI = map(i, 0, lerpLength, 0, 25);
-      let x = 180 * cos(newI);
-      let y = 180 * sin(newI);
+      let x = globeRad * cos(newI);
+      let y = globeRad * sin(newI);
       let newLerp = map(newI, 0, 25, 0, 1);
       let lerpTestA = lerpColor(dayCol, dawnCol, newLerp);
       stroke(lerpTestA);
@@ -251,10 +254,15 @@ function draw_clock(obj) {
   function draw_metroHand(obj) {
     push();
     stroke(255);
-    strokeWeight(3);
+    strokeWeight(5);
     line(0, 0, 0, -40);
     strokeWeight(8);
-    point(0, 0,);
+    point(0,0);
+    stroke(nightCol);
+    strokeWeight(4);
+    point(0,0);
+    strokeWeight(3);
+    point(0,-40);
     pop();
   }
 
@@ -262,11 +270,10 @@ function draw_clock(obj) {
     push();
     stroke(41, 50, 65)
     strokeWeight(4);
-    fill(61, 90, 128);
+    fill(accCol);
     ellipse(0, 0, 105, 105);
-
-    noStroke();
-    fill(41, 50, 65);
+    strokeWeight(2);
+    fill(61, 90, 128);
     ellipse(0, 0, 80, 80);
     pop();
   }
@@ -321,9 +328,10 @@ function draw_clock(obj) {
     push();
     let minAngle = map(minutes, 0, 60, 0, 360);
     rotate(minAngle);
-    strokeWeight(2);
-    stroke(215, 215, 220);
-    fill(93, 95, 113);
+    strokeWeight(4);
+    strokeJoin(ROUND);
+    stroke(accCol);
+    fill(dayCol);
     triangle(0, -180, 10, -150, -10, -150); //minute pointer
     pop();
   }
@@ -402,13 +410,23 @@ function draw_clock(obj) {
     textAlign(CENTER, CENTER);
     textFont('Georgia');
 
-    if (hours > 12) {
+    if (hours >= 18) {
       let pmHours = hours - 12;
+      fill(230, 240, 245)
       text(pmHours, 0, -210);
+    } else if (hours <= 6) {
+      fill(230, 240, 245)
+      text(hours, 0, -210);
     } else if (hours == 0) {
       let midnight = 12;
+      fill(230, 240, 245)
       text(midnight, 0, -210);
+    } else if (hours > 12) {
+      let pmHours = hours - 12;
+      fill(nightCol);
+      text(pmHours, 0, -210);
     } else {
+      fill(nightCol);
       text(hours, 0, -210);
     }
 
@@ -417,6 +435,7 @@ function draw_clock(obj) {
 
   function draw_alarmBall(obj) {
     console.log(obj.seconds_until_alarm);
+
     //    obj.seconds_until_alarm is:
     //        < 0 if no alarm is set
     //        = 0 if the alarm is currently going off
@@ -426,7 +445,6 @@ function draw_clock(obj) {
 
     push();
     for (let i = 0; i < 36; i++) {
-      let globeRad = globeDiam / 2;
       angleMode(DEGREES);
       let angle = map(i, 0, 36, 0, 360);
       let xRad = (globeRad + 60) * cos(angle);
