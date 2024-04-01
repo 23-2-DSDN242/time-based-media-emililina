@@ -40,7 +40,7 @@ function draw_clock(obj) {
   if (hours > 17 || hours < 7){
   background(35);
 } else {
-  background()
+  background(255);
 }
   translate(width / 2, height / 2);
 
